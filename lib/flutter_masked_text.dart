@@ -133,7 +133,9 @@ class MoneyMaskedTextController extends TextEditingController {
         this.thousandSeparator = '.',
         this.rightSymbol = '',
         this.leftSymbol = '',
-        this.precision = 2}) {
+        this.precision = 2,
+        this.defaultValue = 0.0,
+        }) {
     _validateConfig();
 
     this.addListener(() {
@@ -143,7 +145,7 @@ class MoneyMaskedTextController extends TextEditingController {
 
     this.updateValue(initialValue);
   }
-
+  final double defaultValue;
   final String decimalSeparator;
   final String thousandSeparator;
   final String rightSymbol;
@@ -186,9 +188,13 @@ class MoneyMaskedTextController extends TextEditingController {
   double get numberValue {
     List<String> parts = _getOnlyNumbers(this.text).split('').toList(growable: true);
 
-    parts.insert(parts.length - precision, '.');
-
-    return double.parse(parts.join());
+    if(precision>0){
+      parts.insert(parts.length - precision, '.');
+    }
+    if(parts.isNotEmpty){
+      return double.parse(parts.join());
+    }
+    return defaultValue;
   }
 
   _validateConfig() {
